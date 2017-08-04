@@ -1,2 +1,0 @@
-# gloger
-golang logs
