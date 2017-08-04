@@ -91,47 +91,38 @@ var (
 	blue    = string([]byte{27, 91, 57, 55, 59, 52, 52, 109})
 	magenta = string([]byte{27, 91, 57, 55, 59, 52, 53, 109})
 	cyan    = string([]byte{27, 91, 57, 55, 59, 52, 54, 109})
-
-	w32Green   = string([]byte{27, 91, 52, 50, 109})
-	w32White   = string([]byte{27, 91, 52, 55, 109})
-	w32Yellow  = string([]byte{27, 91, 52, 51, 109})
-	w32Red     = string([]byte{27, 91, 52, 49, 109})
-	w32Blue    = string([]byte{27, 91, 52, 52, 109})
-	w32Magenta = string([]byte{27, 91, 52, 53, 109})
-	w32Cyan    = string([]byte{27, 91, 52, 54, 109})
-
 	reset = string([]byte{27, 91, 48, 109})
 )
 
-func ColorByStatus(cond bool, code int) string {
+func ColorByStatus(code int) string {
 	switch {
 	case code >= 200 && code < 300:
-		return map[bool]string{true: green, false: w32Green}[cond]
+		return green
 	case code >= 300 && code < 400:
-		return map[bool]string{true: white, false: w32White}[cond]
+		return white
 	case code >= 400 && code < 500:
-		return map[bool]string{true: yellow, false: w32Yellow}[cond]
+		return yellow
 	default:
-		return map[bool]string{true: red, false: w32Red}[cond]
+		return red
 	}
 }
 
-func ColorByMethod(cond bool, method string) string {
+func ColorByMethod(method string) string {
 	switch method {
 	case "GET":
-		return map[bool]string{true: blue, false: w32Blue}[cond]
+		return blue
 	case "POST":
-		return map[bool]string{true: cyan, false: w32Cyan}[cond]
+		return cyan
 	case "PUT":
-		return map[bool]string{true: yellow, false: w32Yellow}[cond]
+		return yellow
 	case "DELETE":
-		return map[bool]string{true: red, false: w32Red}[cond]
+		return red
 	case "PATCH":
-		return map[bool]string{true: green, false: w32Green}[cond]
+		return green
 	case "HEAD":
-		return map[bool]string{true: magenta, false: w32Magenta}[cond]
+		return magenta
 	case "OPTIONS":
-		return map[bool]string{true: white, false: w32White}[cond]
+		return white
 	default:
 		return reset
 	}
