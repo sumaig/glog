@@ -600,7 +600,7 @@ func Informational(f interface{}, v ...interface{}) {
 	goLogger.Info(formatLog(f, v...))
 }
 
-// Info compatibility alias for Warning()
+// Info compatibility alias for Informational()
 func Info(f interface{}, v ...interface{}) {
 	goLogger.Info(formatLog(f, v...))
 }
