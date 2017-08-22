@@ -32,13 +32,13 @@
 package glog
 
 import (
-"fmt"
-"os"
-"path"
-"runtime"
-"strconv"
-"sync"
-"time"
+	"fmt"
+	"os"
+	"path"
+	"runtime"
+	"strconv"
+	"sync"
+	"time"
 	"log"
 	"strings"
 )
