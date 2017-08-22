@@ -39,6 +39,8 @@ import (
 "strconv"
 "sync"
 "time"
+	"log"
+	"strings"
 )
 
 // RFC5424 log message levels.
@@ -479,4 +481,161 @@ func (bl *GoLogger) flush() {
 	for _, l := range bl.outputs {
 		l.Flush()
 	}
+}
+
+// goLogger references the used application logger.
+var goLogger *GoLogger = NewLogger()
+
+// GetLogger returns the default GoLogger
+func GetGoLogger() *GoLogger {
+	return goLogger
+}
+
+var goLoggerMap = struct {
+	sync.RWMutex
+	logs map[string]*log.Logger
+}{
+	logs: map[string]*log.Logger{},
+}
+
+// GetLogger returns the default GoLogger
+func GetLogger(prefixes ...string) *log.Logger {
+	prefix := append(prefixes, "")[0]
+	if prefix != "" {
+		prefix = fmt.Sprintf(`[%s] `, strings.ToUpper(prefix))
+	}
+	goLoggerMap.RLock()
+	l, ok := goLoggerMap.logs[prefix]
+	if ok {
+		goLoggerMap.RUnlock()
+		return l
+	}
+	goLoggerMap.RUnlock()
+	goLoggerMap.Lock()
+	defer goLoggerMap.Unlock()
+	l, ok = goLoggerMap.logs[prefix]
+	if !ok {
+		l = log.New(goLogger, prefix, 0)
+		goLoggerMap.logs[prefix] = l
+	}
+	return l
+}
+
+// Reset will remove all the adapter
+func Reset() {
+	goLogger.Reset()
+}
+
+func Async(msgLen ...int64) *GoLogger {
+	return goLogger.Async(msgLen...)
+}
+
+// SetLevel sets the global log level used by the simple logger.
+func SetLevel(l int) {
+	goLogger.SetLevel(l)
+}
+
+// EnableFuncCallDepth enable log funcCallDepth
+func EnableFuncCallDepth(b bool) {
+	goLogger.enableFuncCallDepth = b
+}
+
+// SetLogFuncCall set the CallDepth, default is 4
+func SetLogFuncCall(b bool) {
+	goLogger.EnableFuncCallDepth(b)
+	goLogger.SetLogFuncCallDepth(4)
+}
+
+// SetLogFuncCallDepth set log funcCallDepth
+func SetLogFuncCallDepth(d int) {
+	goLogger.loggerFuncCallDepth = d
+}
+
+// SetLogger sets a new logger.
+func SetLogger(adapter string, config ...string) error {
+	err := goLogger.SetLogger(adapter, config...)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Emergency logs a message at emergency level.
+func Emergency(f interface{}, v ...interface{}) {
+	goLogger.Emergency(formatLog(f, v...))
+}
+
+// Alert logs a message at alert level.
+func Alert(f interface{}, v ...interface{}) {
+	goLogger.Alert(formatLog(f, v...))
+}
+
+// Critical logs a message at critical level.
+func Critical(f interface{}, v ...interface{}) {
+	goLogger.Critical(formatLog(f, v...))
+}
+
+// Error logs a message at error level.
+func Error(f interface{}, v ...interface{}) {
+	goLogger.Error(formatLog(f, v...))
+}
+
+// Warning logs a message at warning level.
+func Warning(f interface{}, v ...interface{}) {
+	goLogger.Warn(formatLog(f, v...))
+}
+
+// Warn compatibility alias for Warning()
+func Warn(f interface{}, v ...interface{}) {
+	goLogger.Warn(formatLog(f, v...))
+}
+
+// Notice logs a message at notice level.
+func Notice(f interface{}, v ...interface{}) {
+	goLogger.Notice(formatLog(f, v...))
+}
+
+// Informational logs a message at info level.
+func Informational(f interface{}, v ...interface{}) {
+	goLogger.Info(formatLog(f, v...))
+}
+
+// Info compatibility alias for Warning()
+func Info(f interface{}, v ...interface{}) {
+	goLogger.Info(formatLog(f, v...))
+}
+
+// Debug logs a message at debug level.
+func Debug(f interface{}, v ...interface{}) {
+	goLogger.Debug(formatLog(f, v...))
+}
+
+// Trace logs a message at trace level.
+// compatibility alias for Warning()
+func Trace(f interface{}, v ...interface{}) {
+	goLogger.Trace(formatLog(f, v...))
+}
+
+func formatLog(f interface{}, v ...interface{}) string {
+	var msg string
+	switch f.(type) {
+	case string:
+		msg = f.(string)
+		if len(v) == 0 {
+			return msg
+		}
+		if strings.Contains(msg, "%") && !strings.Contains(msg, "%%") {
+			//format string
+		} else {
+			//do not contain format char
+			msg += strings.Repeat(" %v", len(v))
+		}
+	default:
+		msg = fmt.Sprint(f)
+		if len(v) == 0 {
+			return msg
+		}
+		msg += strings.Repeat(" %v", len(v))
+	}
+	return fmt.Sprintf(msg, v...)
 }
