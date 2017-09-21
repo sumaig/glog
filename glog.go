@@ -562,57 +562,90 @@ func SetLogger(adapter string, config ...string) error {
 
 // Emergency logs a message at emergency level.
 func Emergency(f interface{}, v ...interface{}) {
+	if LevelEmergency > goLogger.level {
+		return
+	}
 	goLogger.Emergency(formatLog(f, v...))
 }
 
 // Alert logs a message at alert level.
 func Alert(f interface{}, v ...interface{}) {
+	if LevelAlert > goLogger.level {
+		return
+	}
 	goLogger.Alert(formatLog(f, v...))
 }
 
 // Critical logs a message at critical level.
 func Critical(f interface{}, v ...interface{}) {
+	if LevelCritical > goLogger.level {
+		return
+	}
 	goLogger.Critical(formatLog(f, v...))
 }
 
 // Error logs a message at error level.
 func Error(f interface{}, v ...interface{}) {
+	if LevelError > goLogger.level {
+		return
+	}
 	goLogger.Error(formatLog(f, v...))
 }
 
 // Warning logs a message at warning level.
 func Warning(f interface{}, v ...interface{}) {
+	if LevelWarn > goLogger.level {
+		return
+	}
 	goLogger.Warn(formatLog(f, v...))
 }
 
 // Warn compatibility alias for Warning()
 func Warn(f interface{}, v ...interface{}) {
+	if LevelWarn > goLogger.level {
+		return
+	}
 	goLogger.Warn(formatLog(f, v...))
 }
 
 // Notice logs a message at notice level.
 func Notice(f interface{}, v ...interface{}) {
+	if LevelNotice > goLogger.level {
+		return
+	}
 	goLogger.Notice(formatLog(f, v...))
 }
 
 // Informational logs a message at info level.
 func Informational(f interface{}, v ...interface{}) {
+	if LevelInformational > goLogger.level {
+		return
+	}
 	goLogger.Info(formatLog(f, v...))
 }
 
 // Info compatibility alias for Informational()
 func Info(f interface{}, v ...interface{}) {
+	if LevelInfo > goLogger.level {
+		return
+	}
 	goLogger.Info(formatLog(f, v...))
 }
 
 // Debug logs a message at debug level.
 func Debug(f interface{}, v ...interface{}) {
+	if LevelDebug > goLogger.level {
+		return
+	}
 	goLogger.Debug(formatLog(f, v...))
 }
 
 // Trace logs a message at trace level.
 // compatibility alias for Warning()
 func Trace(f interface{}, v ...interface{}) {
+	if LevelTrace > goLogger.level {
+		return
+	}
 	goLogger.Trace(formatLog(f, v...))
 }
 
