@@ -69,13 +69,13 @@ glog.Async(1e3)
 > 异步输出允许设置缓冲 chan 的大小
 
 ## 引擎配置设置
-**console**
+### console
 
 可以设置输出的级别，或者不设置保持默认，默认输出到 os.Stdout：
 
 glog.SetLogger(logs.AdapterConsole, \`{"level":1}\`)
 
-**file**
+### file
 
 设置的例子如下所示：
 
@@ -99,7 +99,7 @@ level 日志保存的时候的级别，默认是 Trace 级别
 
 perm 日志文件权限
 
-**multifile**
+### multifile
 
 glog.SetLogger(glog.AdapterMultiFile, \`{"filename":"test.log","separate":["emergency", "alert", "critical", "error", "warning", "notice", "info", "debug"]}\`)
 
